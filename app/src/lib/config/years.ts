@@ -98,5 +98,7 @@ export type TreeAccount = (typeof treeAccounts)[number];
 /** Paths are relative to `static/`, for use with `asset()`. */
 export const dataPaths = {
 	flow: (y: string) => `data/flow/${y}.csv` as const,
-	tree: (y: string, account: TreeAccount) => `data/tree/Approved.${account}.${y}.json` as const
+	tree: (y: string, account: TreeAccount) => `data/tree/Approved.${account}.${y}.json` as const,
+	compare: (kind: 'expenses' | 'revenue', dimension: 'depts' | 'account-cats', y: string) =>
+		`data/compare/fiscal-years-${kind}/${dimension}/${y}.json` as const
 };

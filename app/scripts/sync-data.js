@@ -11,6 +11,7 @@ const legacyDir = join(appDir, '..', '_src');
 const copies = [
 	['data/flow', 'static/data/flow'],
 	['data/tree', 'static/data/tree'],
+	['data/compare', 'static/data/compare'],
 	['images', 'static/images']
 ];
 
