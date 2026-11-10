@@ -34,6 +34,8 @@
 	--fund: #1a4480;
 	--expense: #c05600;
 	--expense-fill: #e8742a;
+	--increase: #005ea2;
+	--decrease: #b04a00;
 
 	--tile-text: #1b1b1b;
 	--tile-1: #8dd3c7;
@@ -90,6 +92,8 @@
 		--fund: #73b3e7;
 		--expense: #fa9441;
 		--expense-fill: #e8742a;
+		--increase: #73b3e7;
+		--decrease: #fa9441;
 
 		--tile-text: #ffffff;
 		--tile-1: #0e6b5c;
@@ -137,6 +141,8 @@
 	--fund: #73b3e7;
 	--expense: #fa9441;
 	--expense-fill: #e8742a;
+	--increase: #73b3e7;
+	--decrease: #fa9441;
 
 	--tile-text: #ffffff;
 	--tile-1: #0e6b5c;

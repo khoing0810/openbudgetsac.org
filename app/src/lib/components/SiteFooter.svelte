@@ -27,6 +27,7 @@
 							>Detailed breakdown</a
 						>
 					</li>
+					<li><a class="arrow" href={resolve('/compare')}>Compare years</a></li>
 					<li><a class="arrow" href={resolve('/budget')}>All budget years</a></li>
 				</ul>
 			</nav>

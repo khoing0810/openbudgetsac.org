@@ -8,7 +8,8 @@ const pages = [
 	'/budget/FY26/tree/',
 	'/who-we-are/',
 	'/budget-visuals/',
-	'/measure-z/'
+	'/measure-z/',
+	'/compare/'
 ];
 
 test('home page links to the latest budget', async ({ page }) => {
@@ -41,6 +42,26 @@ test('treemap drills down and back up', async ({ page }) => {
 	await expect(crumbs.getByText(name, { exact: true })).toBeVisible();
 	await crumbs.getByRole('button').first().click();
 	await expect(crumbs.getByRole('button')).toHaveCount(0);
+});
+
+test('compare reads years from the URL and updates it as you change them', async ({ page }) => {
+	await page.goto('/compare/?from=FY20&to=FY26&side=revenue');
+	await expect(page.getByLabel('From', { exact: true })).toHaveValue('FY20');
+	await expect(page.locator('.headline')).toContainText('Revenue grew');
+	await page.getByLabel('From', { exact: true }).selectOption('FY25');
+	await expect(page).toHaveURL(/from=FY25/);
+	await page.getByRole('button', { name: 'Swap years' }).click();
+	await expect(page.getByLabel('From', { exact: true })).toHaveValue('FY26');
+	await expect(page.getByLabel('To', { exact: true })).toHaveValue('FY25');
+});
+
+test('compare shows changes by department and switches to percent', async ({ page }) => {
+	await page.goto('/compare/');
+	const rows = page.getByRole('list', { name: /What changed/ }).getByRole('listitem');
+	expect(await rows.count()).toBeGreaterThan(10);
+	await page.getByRole('radio', { name: 'Percent' }).check();
+	await expect(rows.first().locator('.value')).toContainText('%');
+	await expect(page.getByRole('table', { name: /Spending by department/ })).toBeVisible();
 });
 
 test('legacy chart URLs redirect to the latest year', async ({ page }) => {
