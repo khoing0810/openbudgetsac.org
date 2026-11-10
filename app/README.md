@@ -35,6 +35,10 @@ The script rewrites `_src/data/City_of_Sacramento_Approved_Budgets.csv`, then ea
 
 `.github/workflows/budget-data.yml` runs it every Monday and opens a pull request when anything changed, so a person checks the numbers before they go live. It needs **Settings → Actions → General → Allow GitHub Actions to create and approve pull requests**. You can also start it by hand from the Actions tab.
 
+### Updating the budget calendar
+
+`/budget-process/` reads `src/lib/content/budget-calendar.ts`: the yearly phases, the dates of the latest cycle (each with a source link), and ways to take part. Each fall, when the City publishes the next year's calendar (usually in its Budget Development Policy report to the Council), add the new dates to `events` and update `cycle`. Until then the page says the next dates aren't out yet.
+
 ## Commands
 
 Use Node 24 (see `.nvmrc`).
@@ -64,6 +68,7 @@ To build for a sub-path such as GitHub Pages project pages, set `BASE_PATH=/open
 | `/compare/?from=FY25&to=FY26`                       | Compare any two years: what changed, the long-run trend, and a full table. The URL keeps the choice so it can be shared |
 | `/budget/<year>/tree/`                              | Detailed breakdown (treemap) for a year                                                                                 |
 | `/explore/?year=FY26&by=category&department=Police` | Filter every year by department, fund and category; drill in, see the trend, download a CSV                             |
+| `/budget-process/`                                  | How the yearly budget cycle works, where it stands today, and every step of the latest cycle                            |
 | `/adopted-budget-flow/`, `/adopted-budget-tree/`    | Redirect old links to the latest year                                                                                   |
 
 ## CI/CD
