@@ -5,17 +5,25 @@
 
 	let { graph, title }: { graph: FlowGraph; title: string } = $props();
 
-	const MIN_WIDTH = 720;
-	const LABEL_GUTTER = 190;
+	const MIN_WIDTH = 860;
+	const LEFT_GUTTER = 250;
+	const RIGHT_GUTTER = 330;
+	const TOP = 28;
+	// Bars thinner than this skip their text label; hover, focus and the table still name them.
+	const MIN_LABEL_HEIGHT = 11;
 
 	let containerWidth = $state(0);
 	let selectedNode = $state<string | null>(null);
 	let hoveredLink = $state<number | null>(null);
 
 	const width = $derived(Math.max(MIN_WIDTH, containerWidth || 960));
-	const height = $derived(Math.max(480, graph.nodes.length * 20));
+	const height = $derived(Math.max(520, graph.nodes.length * 28));
 	const layout = $derived(
-		layoutFlow(graph, { width: width - 2 * LABEL_GUTTER, height: height - 20, nodePadding: 6 })
+		layoutFlow(graph, {
+			width: width - LEFT_GUTTER - RIGHT_GUTTER,
+			height: height - TOP - 10,
+			nodePadding: 6
+		})
 	);
 	const nodeById = $derived(new Map(layout.nodes.map((n) => [n.id, n])));
 
@@ -80,7 +88,7 @@
 			role="group"
 			aria-label="{title}: revenue sources on the left flow into the General Fund and non-discretionary funds, which flow out to departments on the right."
 		>
-			<g transform="translate({LABEL_GUTTER},10)">
+			<g transform="translate({LEFT_GUTTER},{TOP})">
 				<g class="links" fill="none">
 					{#each layout.links as link (link.index)}
 						<path
@@ -127,7 +135,7 @@
 								<text class="fund-label" x={(node.x1 - node.x0) / 2} y={-6} text-anchor="middle"
 									>{node.name}</text
 								>
-							{:else}
+							{:else if h >= MIN_LABEL_HEIGHT}
 								<text
 									x={node.kind === 'revenue' ? -8 : node.x1 - node.x0 + 8}
 									y={h / 2}
