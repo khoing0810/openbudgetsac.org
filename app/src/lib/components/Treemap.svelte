@@ -81,7 +81,11 @@
 				</rect>
 				{#if fits(tile)}
 					<text x="6" y="18" class="name">{truncate(tile.name, tw)}</text>
-					<text x="6" y="34" class="amount">{formatUsdCompact(tile.value)}</text>
+					<text x="6" y="34" class="amount"
+						>{formatUsdCompact(tile.value)}{tw > 120
+							? ` · ${formatShare(tile.value, view.total)}`
+							: ''}</text
+					>
 				{/if}
 			</g>
 		{/each}

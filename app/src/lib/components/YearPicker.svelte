@@ -11,7 +11,12 @@
 			view === 'flow'
 				? resolve('/budget/[year]/flow', { year })
 				: resolve('/budget/[year]/tree', { year });
-		goto(target, { reset: false });
+		// Keep the chosen view (and, on the breakdown, the account and grouping) when changing year.
+		const q = new URLSearchParams(
+			[...new URLSearchParams(location.search)].filter(([key]) => key !== 'p')
+		);
+		// eslint-disable-next-line svelte/no-navigation-without-resolve -- the path is resolve()d; only a query string is appended
+		goto(`${target}${q.size ? `?${q}` : ''}`, { reset: false });
 	};
 </script>
 
