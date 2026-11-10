@@ -109,6 +109,8 @@ export type TreeAccount = (typeof treeAccounts)[number];
 
 /** Paths are relative to `static/`, for use with `asset()`. */
 export const dataPaths = {
+	/** The City's whole Approved Budgets table, every year (also offered as a download). */
+	approvedBudgets: 'data/approved-budgets.csv',
 	flow: (y: string) => `data/flow/${y}.csv` as const,
 	tree: (y: string, account: TreeAccount) => `data/tree/Approved.${account}.${y}.json` as const,
 	compare: (kind: 'expenses' | 'revenue', dimension: 'depts' | 'account-cats', y: string) =>

@@ -38,12 +38,12 @@
 			alt: 'The comparison tool, comparing two Sacramento city budgets.'
 		},
 		{
-			title: 'Custom queries (FY 2018)',
-			body: "Explore the details of the City of Sacramento's adopted 2018 budget.",
-			href: 'https://explorer.openbudgetsac.org/',
-			external: true,
-			image: asset('images/home/explorer.png'),
-			alt: 'The explorer used to query the 2018 budget data.'
+			title: 'Explore the data',
+			body: 'Filter every year since FY 2012–13 by department, fund and category, and download what you find.',
+			href: resolve('/explore'),
+			external: false,
+			image: asset('images/home/explore-thumb.png'),
+			alt: 'The Explore page, filtered to Police spending by category.'
 		}
 	]);
 </script>

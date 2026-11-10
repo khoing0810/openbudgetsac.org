@@ -12,6 +12,7 @@ const copies = [
 	['data/flow', 'static/data/flow'],
 	['data/tree', 'static/data/tree'],
 	['data/compare', 'static/data/compare'],
+	['data/City_of_Sacramento_Approved_Budgets.csv', 'static/data/approved-budgets.csv'],
 	['images', 'static/images']
 ];
 

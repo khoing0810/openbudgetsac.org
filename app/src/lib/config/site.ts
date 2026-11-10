@@ -20,6 +20,7 @@ export const primaryNav: NavGroup[] = [
 			{ label: 'Cash Flow', href: `/budget/${latestYear.id}/flow` },
 			{ label: 'Detailed Breakdown', href: `/budget/${latestYear.id}/tree` },
 			{ label: 'Compare Years', href: '/compare' },
+			{ label: 'Explore the Data', href: '/explore' },
 			{ label: 'All Budget Years', href: '/budget' },
 			{ label: 'Budget Visuals', href: '/budget-visuals' },
 			{ label: 'Budget Process', href: '/budget-process' },
