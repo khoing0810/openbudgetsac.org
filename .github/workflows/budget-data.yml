@@ -1,0 +1,155 @@
+name: Budget data
+
+# Checks the City of Sacramento's Approved Budgets table on its open data
+# portal and, when anything changed, opens a pull request with the new
+# numbers so a person reviews them before they go live.
+#
+# Pull requests that touch the data pipeline run the same download as a
+# check, without committing anything, so a change in the City's table shows up
+# before merge.
+#
+# Opening the pull request needs "Allow GitHub Actions to create and approve
+# pull requests" (Settings → Actions → General).
+
+on:
+  schedule:
+    # Mondays, early morning in Sacramento.
+    - cron: "17 14 * * 1"
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "app/scripts/update-budget-data.ts"
+      - "app/src/lib/data/**"
+      - ".github/workflows/budget-data.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: budget-data-${{ github.ref }}
+  cancel-in-progress: false
+
+defaults:
+  run:
+    working-directory: app
+
+jobs:
+  check:
+    name: Download and rebuild (check only)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: app/.nvmrc
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download the latest table and rebuild the data files
+        run: |
+          set -o pipefail
+          npm run data:update | tee "$RUNNER_TEMP/update.txt"
+
+      - name: Check the site still builds with it
+        run: npm run check && npm run build
+
+      - name: Summarize
+        working-directory: ${{ github.workspace }}
+        run: |
+          {
+            echo '### What the City publishes today'
+            echo '```'
+            cat "$RUNNER_TEMP/update.txt"
+            echo '```'
+            echo '### Files that would change'
+            echo '```'
+            git status --short -- _src/data app/src/lib/config/open-data.json
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  update:
+    name: Download and open a pull request
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      pull-requests: write
+      # To start App CI on the data branch: pull requests opened with this
+      # workflow's token don't trigger other workflows on their own.
+      actions: write
+    env:
+      BRANCH: data/approved-budgets
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: app/.nvmrc
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download the latest table and rebuild the data files
+        run: |
+          set -o pipefail
+          npm run data:update | tee "$RUNNER_TEMP/update.txt"
+
+      - name: Check the site still builds with it
+        run: npm run check && npm run build
+
+      - name: Open or update the pull request
+        working-directory: ${{ github.workspace }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE: ${{ github.event.repository.default_branch }}
+        run: |
+          if [ -z "$(git status --porcelain -- _src/data app/src/lib/config/open-data.json)" ]; then
+            echo "The City's table hasn't changed." | tee -a "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          {
+            echo "The City of Sacramento's [Approved Budgets table](https://data.cityofsacramento.org/datasets/SacCity::city-of-sacramento-approved-budgets) has changed. This updates the site's copy and rebuilds every year from FY 2024–25 on."
+            echo
+            echo "Please compare the totals below with the City's budget documents before merging."
+            echo
+            echo '```'
+            cat "$RUNNER_TEMP/update.txt"
+            echo '```'
+            echo
+            echo "_Opened by the [Budget data workflow](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})._"
+          } > "$RUNNER_TEMP/body.md"
+          cat "$RUNNER_TEMP/body.md" >> "$GITHUB_STEP_SUMMARY"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "$BRANCH"
+          git add -- _src/data app/src/lib/config/open-data.json
+          git commit -m "Update budget data from the City's open data portal"
+          git push --force "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$BRANCH"
+
+          if [ "$(gh pr view "$BRANCH" --json state --jq .state 2>/dev/null)" = "OPEN" ]; then
+            gh pr edit "$BRANCH" --body-file "$RUNNER_TEMP/body.md"
+          else
+            gh pr create --base "$BASE" --head "$BRANCH" \
+              --title "Update budget data from the City's open data portal" \
+              --body-file "$RUNNER_TEMP/body.md"
+          fi
+          gh workflow run app-ci.yml --ref "$BRANCH"
