@@ -16,7 +16,7 @@ export const APPROVED_BUDGETS_LAYER =
 
 /** The dataset's page on the City's portal, for people. */
 export const APPROVED_BUDGETS_PAGE =
-	'https://data.cityofsacramento.org/datasets/SacCity::city-of-sacramento-approved-budgets';
+	'https://data.cityofsacramento.org/datasets/7b8b3680603c4894bd3faaa41c986c7c_0';
 
 /**
  * Years from this one on are built entirely from the open dataset. Earlier

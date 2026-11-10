@@ -126,7 +126,7 @@ jobs:
           fi
 
           {
-            echo "The City of Sacramento's [Approved Budgets table](https://data.cityofsacramento.org/datasets/SacCity::city-of-sacramento-approved-budgets) has changed. This updates the site's copy and rebuilds every year from FY 2024–25 on."
+            echo "The City of Sacramento's [Approved Budgets table](https://data.cityofsacramento.org/datasets/7b8b3680603c4894bd3faaa41c986c7c_0) has changed. This updates the site's copy and rebuilds every year from FY 2024–25 on."
             echo
             echo "Please compare the totals below with the City's budget documents before merging."
             echo
