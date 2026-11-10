@@ -37,6 +37,8 @@ Core goals:
 - Support both high-level and detailed exploration.
 - Keep the site lightweight, testable, and contributor-friendly.
 
+> **Rewrite in progress.** A SvelteKit version of the site is being built in [`app/`](app/README.md) ([#76](https://github.com/opensacorg/openbudgetsac.org/issues/76)). It reads the same `_src/data/` files. The Eleventy site in `_src/` is still what ships to production.
+
 ## Install
 
 ### Prerequisites
@@ -131,6 +133,8 @@ Memory profiling outputs:
     - `docker build --target test .` (full Docker-optimized test suite)
     - `docker build --target verify-parallel .` (parallel verification target)
 - Deploy workflow (`.github/workflows/deploy.yml`) runs i18n smoke tests, verifies first-party JSDoc coverage, generates JSDoc docs, builds static files from `_src`, validates i18n assets in output, and publishes to GitHub Pages.
+- App CI workflow (`.github/workflows/app-ci.yml`) covers the SvelteKit rewrite in `app/`: lint, svelte-check, Vitest, static build, Playwright e2e with axe checks on desktop and phone, and an optional Cloudflare Pages preview deploy. See [`app/README.md`](app/README.md#cicd).
+- Dependabot (`.github/dependabot.yml`) opens weekly update PRs for `app/`, `_src/` and the pinned GitHub Actions.
 
 ## Source Tree
 ```text
