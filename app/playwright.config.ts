@@ -22,7 +22,7 @@ export default defineConfig({
 		{ name: 'phone', use: { ...devices['Pixel 7'] } }
 	],
 	webServer: {
-		// CI builds once in an earlier step and sets SKIP_BUILD to reuse it.
+		// Set SKIP_BUILD=1 to reuse an existing local build (needs .svelte-kit/output too).
 		command: process.env.SKIP_BUILD ? 'npm run preview' : 'npm run build && npm run preview',
 		port: 4173,
 		reuseExistingServer: !ci
