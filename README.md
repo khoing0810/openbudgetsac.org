@@ -49,7 +49,6 @@ Core goals:
 ```bash
 # from repository root
 cd _src
-npm audit fix
 npm ci --include=dev
 npm run build-css
 npm run serve
@@ -78,7 +77,7 @@ docker compose --profile test build test-parallel
 From `_src/`:
 
 ```bash
-npm audit fix                                  # resolves supply-side security issues introduced by NPM packages
+npm audit                                      # report known vulnerabilities (fix via a reviewed lockfile change, not at build time)
 npm run serve                                  # build TypeScript assets + CSS, then start the Eleventy dev server
 npm run watch                                  # watch legacy TypeScript assets and the compare bundle
 npm run build:legacy                           # emit legacy/browser TypeScript assets and patch browser-incompatible prologue lines
@@ -147,20 +146,18 @@ openbudgetsac.org/
 │   ├── css/                        # Sass + legacy vendor CSS assets
 │   ├── data/                       # compare/flow/tree data + Python scripts
 │   ├── docs/
-│   │   └── jsdoc/                  # generated JSDoc Markdown index + per-file docs
+│   │   └── jsdoc/                  # generated JSDoc docs (gitignored; run npm run docs:jsdoc)
 │   ├── generated/                  # compiled browser-ready TypeScript output
 │   ├── images/                     # static images
 │   ├── js/
 │   │   ├── compare/                # React comparison app
 │   │   │   └── i18n.ts             # compare-page i18n catalog + language resolution
-│   │   ├── i18n-site.ts            # site-wide i18n runtime (legacy + modern templates)
-│   │   └── old/                    # legacy OpenSpending scripts
+│   │   └── i18n-site.ts            # site-wide i18n runtime (legacy + modern templates)
 │   ├── partials/                   # shared Pug partials/layouts
 │   ├── scripts/
 │   │   ├── add-missing-jsdoc.ts    # inserts generated missing JSDoc in active first-party TS/JS files
 │   │   ├── generate-jsdoc-docs.ts  # JSDoc Markdown generator (npm run docs:jsdoc)
 │   │   └── strip-cjs-prologue.ts   # removes browser-breaking CommonJS prologue lines from generated assets
-│   ├── templates/                  # legacy template pages
 │   ├── test/                       # test utilities (preflight, static server, perf, RSS memory probe + CSV conversion)
 │   │   ├── memory-probe.ts         # process-tree RSS sampler for launch commands (JSON report)
 │   │   └── memory-report-to-csv.ts # converts memory probe JSON timeline into CSV
@@ -361,8 +358,6 @@ No first-party `TODO`/`FIXME` markers are found in active codebase. However, the
 | E2E tests require Linux Chromium shared libraries | `npm run test:e2e` will fail on hosts missing required runtime libs until dependencies are installed. | [`_src/test/e2e-preflight.ts`](_src/test/e2e-preflight.ts) |
 | Compare bundle remains above Webpack’s default warning threshold | Performance has improved significantly, but bundle size still exceeds 244 KiB default warning level. | [`PERFORMANCE.md`](PERFORMANCE.md) |
 | Large source images still impact strict 3G targets | Optional optimization work remains for modern image formats and responsive variants. | [`PERFORMANCE.md`](PERFORMANCE.md) |
-| Legacy OpenSpending/jQuery treemap path is still in production code | Historical widget path increases maintenance burden and modernization effort. | [`_src/js/old/treemap.ts`](_src/js/old/treemap.ts) |
-| Historical page copy contains dated “pending” notices from 2016 | Content is factually historical, but appears stale/confusing if read as current status. | [`_src/2016-17-adjusted-budget-flow.jade:10`](_src/2016-17-adjusted-budget-flow.jade), [`_src/2016-17-adjusted-budget-tree.jade:10`](_src/2016-17-adjusted-budget-tree.jade) |
 
 ## Contributing
 Contributions are welcome, but please consult with the Open Sacramento community first.
@@ -380,7 +375,7 @@ Typical workflow:
 
 Useful commands from `_src/`:
 ```bash
-npm audit fix
+npm audit
 npm run lint
 npm run test:unit:coverage
 npm run test:a11y

@@ -7,7 +7,6 @@ COPY _src/package*.json ./
 # Avoid downloading Puppeteer's browser in the shared base layer.
 # `docker compose up` builds the runtime target only and does not need Chromium.
 ENV PUPPETEER_SKIP_DOWNLOAD=true
-RUN npm audit fix
 RUN npm ci --include=dev
 
 COPY _src .
