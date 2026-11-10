@@ -8,21 +8,8 @@
 		path = $bindable([])
 	}: { root: BudgetTreeNode; title: string; path?: string[] } = $props();
 
-	// Muted, distinguishable fills that keep dark text readable.
-	const PALETTE = [
-		'#8dd3c7',
-		'#bebada',
-		'#fdb462',
-		'#b3de69',
-		'#fccde5',
-		'#80b1d3',
-		'#ffffb3',
-		'#d9d9d9',
-		'#bc80bd',
-		'#ccebc5',
-		'#ffed6f',
-		'#fb8072'
-	];
+	// Tile fills come from --tile-1..12 so light and dark themes each get a readable set.
+	const TILE_COUNT = 12;
 
 	let width = $state(0);
 	const w = $derived(Math.max(280, width || 800));
@@ -75,7 +62,7 @@
 				<rect
 					width={tw}
 					height={th}
-					fill={PALETTE[i % PALETTE.length]}
+					style:fill="var(--tile-{(i % TILE_COUNT) + 1})"
 					tabindex={tile.hasChildren ? 0 : undefined}
 					role={tile.hasChildren ? 'button' : 'img'}
 					aria-label="{tile.name}: {formatUsd(tile.value)}, {formatShare(
@@ -164,7 +151,7 @@
 		font-size: 12px;
 	}
 	.tile rect {
-		stroke: #fff;
+		stroke: var(--page);
 		stroke-width: 1;
 		cursor: pointer;
 		outline: none;
@@ -178,7 +165,7 @@
 		stroke-width: 2;
 	}
 	text {
-		fill: #1b1b1b;
+		fill: var(--tile-text);
 		pointer-events: none;
 	}
 	.name {

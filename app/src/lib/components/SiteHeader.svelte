@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import { primaryNav, siteName } from '#lib/config/site.ts';
+	import { primaryNav } from '#lib/config/site.ts';
+	import ThemeToggle from './ThemeToggle.svelte';
 
 	let menuOpen = $state(false);
 
@@ -15,7 +16,11 @@
 <a class="skip-link" href="#main-content">Skip to main content</a>
 <header class="site-header">
 	<div class="container bar">
-		<a class="brand" href={resolve('/')}>{siteName}</a>
+		<a class="brand" href={resolve('/')}>
+			<span class="mark" aria-hidden="true"></span>
+			<span>Open Budget<span class="city">Sacramento</span></span>
+		</a>
+		<div class="theme"><ThemeToggle /></div>
 		<button
 			class="menu-toggle"
 			type="button"
@@ -36,7 +41,9 @@
 								<li>
 									{#if link.href.startsWith('https://')}
 										<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external site -->
-										<a href={link.href}>{link.label}</a>
+										<a href={link.href}
+											>{link.label}<span class="ext" aria-hidden="true"> ↗</span></a
+										>
 									{:else}
 										<a href={resolve(link.href as '/')}>{link.label}</a>
 									{/if}
@@ -56,38 +63,61 @@
 		left: 0.5rem;
 		top: -3rem;
 		padding: 0.5rem 0.75rem;
-		background: var(--green-dark);
-		color: #fff;
+		background: var(--primary);
+		color: var(--on-primary);
 		z-index: 10;
 	}
 	.skip-link:focus {
 		top: 0.5rem;
 	}
 	.site-header {
-		background: var(--surface);
+		position: sticky;
+		top: 0;
+		z-index: 20;
+		background: color-mix(in srgb, var(--page) 88%, transparent);
+		backdrop-filter: saturate(1.4) blur(10px);
 		border-bottom: 1px solid var(--border);
 	}
 	.bar {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		justify-content: space-between;
-		min-height: 3.5rem;
+		min-height: 4rem;
 		gap: 0.5rem;
 	}
 	.brand {
-		font-family: var(--font-heading);
-		font-weight: 700;
-		font-size: 1.15rem;
-		color: var(--green-dark);
+		display: inline-flex;
+		align-items: center;
+		gap: 0.6rem;
+		margin-right: auto;
+		font-weight: 800;
+		font-size: 1.1rem;
+		letter-spacing: -0.01em;
+		color: var(--text-strong);
 		text-decoration: none;
+	}
+	.brand:hover {
+		color: var(--text-strong);
+	}
+	.mark {
+		width: 1.6rem;
+		height: 1.6rem;
+		border-radius: 4px;
+		background:
+			linear-gradient(135deg, transparent 50%, var(--accent) 50%) bottom right / 55% 55% no-repeat,
+			var(--primary);
+	}
+	.city {
+		font-weight: 500;
+		color: var(--text-muted);
+		margin-left: 0.35rem;
 	}
 	.menu-toggle {
 		min-width: 2.75rem;
 		min-height: 2.75rem;
 		border: 1px solid var(--border);
 		border-radius: var(--radius);
-		background: var(--page);
+		background: var(--raised);
 		font-size: 1.25rem;
 		cursor: pointer;
 	}
@@ -112,18 +142,30 @@
 		display: block;
 		font-weight: 700;
 		color: var(--text-muted);
-		font-size: 0.85rem;
+		font-size: 0.8rem;
 		text-transform: uppercase;
-		letter-spacing: 0.06em;
+		letter-spacing: 0.1em;
 	}
 	.group a {
 		display: block;
-		padding: 0.4rem 0;
+		padding: 0.45rem 0;
+		color: var(--text);
+		text-decoration: none;
+	}
+	.group a:hover {
+		color: var(--link);
+		text-decoration: underline;
+	}
+	.ext {
+		color: var(--text-muted);
 	}
 
 	@media (min-width: 56rem) {
 		.menu-toggle {
 			display: none;
+		}
+		.theme {
+			order: 3;
 		}
 		nav {
 			display: block;
@@ -138,19 +180,25 @@
 			position: relative;
 		}
 		.group-label {
-			padding: 0.75rem;
+			padding: 0.75rem 0.9rem;
 			cursor: default;
+			color: var(--text);
+			letter-spacing: 0.08em;
+		}
+		.group:hover .group-label,
+		.group:focus-within .group-label {
+			color: var(--primary);
 		}
 		.group ul {
 			display: none;
 			position: absolute;
 			right: 0;
-			min-width: 14rem;
+			min-width: 15rem;
 			padding: 0.5rem 0;
-			background: var(--page);
+			background: var(--raised);
 			border: 1px solid var(--border);
 			border-radius: var(--radius);
-			box-shadow: 0 6px 20px rgb(0 0 0 / 0.08);
+			box-shadow: var(--shadow);
 			z-index: 5;
 		}
 		.group:hover ul,
@@ -158,7 +206,7 @@
 			display: block;
 		}
 		.group a {
-			padding: 0.45rem 1rem;
+			padding: 0.5rem 1rem;
 		}
 	}
 </style>

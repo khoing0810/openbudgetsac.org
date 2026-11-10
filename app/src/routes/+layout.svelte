@@ -1,6 +1,5 @@
 <script lang="ts">
-	import '@fontsource/arvo/400.css';
-	import '@fontsource/arvo/700.css';
+	import '@fontsource-variable/public-sans';
 	import '../app.css';
 	import favicon from '#lib/assets/favicon.svg';
 	import SiteHeader from '#lib/components/SiteHeader.svelte';
