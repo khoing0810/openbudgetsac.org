@@ -37,7 +37,12 @@ const ALIASES: Record<string, string> = {
 	// Renamed in FY 2018–19.
 	'Parks and Recreation': 'Youth, Parks, and Community Enrichment',
 	'Non Appropriated': 'Non-Appropriated',
-	'Fines, Forfeitures, and  Penalties': 'Fines, Forfeitures, and Penalties'
+	'Fines, Forfeitures, and  Penalties': 'Fines, Forfeitures, and Penalties',
+	// Category spellings that changed over the years in the City's open dataset.
+	'Fines Forfeitures Penalties': 'Fines, Forfeitures, and Penalties',
+	'Interest, Rents, Concessions': 'Interest, Rents, and Concessions',
+	'Licenses  Permits': 'Licenses and Permits',
+	'Labor/Supply Offset': 'Labor and Supply Offset'
 };
 
 export function normalizeName(raw: string): string {
