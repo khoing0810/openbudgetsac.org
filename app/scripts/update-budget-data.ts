@@ -12,6 +12,7 @@
 // The scheduled "Budget data" workflow runs this and opens a pull request
 // when anything changed, so a person reviews new numbers before they go live.
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { format, resolveConfig } from 'prettier';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { csvParse } from 'd3-dsv';
@@ -105,7 +106,14 @@ totals.sort((a, b) => (a.fiscal_year_range < b.fiscal_year_range ? -1 : 1));
 writeJson(totalsPath, totals);
 
 const manifest: Manifest = { source: APPROVED_BUDGETS_PAGE, updated, years };
-write(manifestPath, JSON.stringify(manifest, null, '\t') + '\n');
+// Formatted with the repo's Prettier settings, so lint passes on data pull requests.
+write(
+	manifestPath,
+	await format(JSON.stringify(manifest), {
+		...(await resolveConfig(manifestPath)),
+		filepath: manifestPath
+	})
+);
 
 const usd = (n: number) => `$${(n / 1e6).toFixed(1)}M`;
 console.log(`\n${rows.length} rows; City last updated ${updated ?? 'unknown'}\n`);
