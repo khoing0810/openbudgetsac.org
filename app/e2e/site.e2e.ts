@@ -12,6 +12,7 @@ const pages = [
 	'/budget-visuals/',
 	'/measure-z/',
 	'/compare/',
+	'/budget-process/',
 	'/explore/',
 	'/explore/?year=FY20&side=revenue&by=fund&department=Utilities'
 ];
@@ -129,6 +130,23 @@ test('explore switches year and side, and offers downloads', async ({ page }) =>
 	expect((await download).suggestedFilename()).toBe('sacramento-revenue-FY20-by-department.csv');
 	const res = await page.request.get('/data/approved-budgets.csv');
 	expect(res.ok()).toBe(true);
+});
+
+test('budget process shows where the cycle is and every step of the last one', async ({ page }) => {
+	await page.goto('/budget-process/');
+	await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+		'How Sacramento builds its budget'
+	);
+	await expect(page.getByRole('region', { name: 'The yearly cycle' })).toBeVisible();
+	await expect(page.locator('.now h2')).not.toBeEmpty();
+	await expect(page.locator('.phases > li')).toHaveCount(6);
+	await expect(page.locator('.phases .badge')).toHaveCount(1);
+	expect(await page.locator('.timeline > li').count()).toBeGreaterThan(8);
+	await expect(page.getByRole('link', { name: /Council adopts the FY/ })).toHaveAttribute(
+		'href',
+		/^https:\/\//
+	);
+	await expect(page.locator('iframe')).toHaveCount(0);
 });
 
 test('legacy chart URLs redirect to the latest year', async ({ page }) => {
