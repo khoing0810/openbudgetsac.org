@@ -4,8 +4,10 @@ import { expect, test } from '@playwright/test';
 const pages = [
 	'/',
 	'/budget/',
-	'/budget/FY26/flow/',
+	'/budget/FY26/flow/?view=flow',
+	'/budget/FY26/flow/?view=bars',
 	'/budget/FY26/tree/',
+	'/budget/FY26/tree/?account=revenue&by=fund',
 	'/who-we-are/',
 	'/budget-visuals/',
 	'/measure-z/',
@@ -19,17 +21,28 @@ test('home page links to the latest budget', async ({ page }) => {
 });
 
 test('flow chart renders for the latest year', async ({ page }) => {
-	await page.goto('/budget/FY26/flow/');
+	await page.goto('/budget/FY26/flow/?view=flow');
 	const chart = page.locator('figure.flow svg');
 	await expect(chart).toBeVisible();
 	expect(await chart.locator('.links path').count()).toBeGreaterThan(10);
 });
 
 test('year picker switches the flow chart to another year', async ({ page }) => {
-	await page.goto('/budget/FY26/flow/');
+	await page.goto('/budget/FY26/flow/?view=flow');
 	await page.getByLabel('Fiscal year').selectOption('FY20');
-	await expect(page).toHaveURL(/\/budget\/FY20\/flow\/$/);
+	await expect(page).toHaveURL(/\/budget\/FY20\/flow\/\?view=flow$/);
 	await expect(page.locator('figure.flow svg')).toBeVisible();
+});
+
+test('cash flow leads with a summary and offers a sources and uses view', async ({ page }) => {
+	await page.goto('/budget/FY26/flow/');
+	await expect(page.locator('.headline')).toContainText('planned to take in');
+	await expect(page.locator('.stat-grid')).toContainText('General Fund');
+	await page.getByRole('radio', { name: 'Sources and uses' }).check();
+	await expect(page).toHaveURL(/view=bars/);
+	const sources = page.getByRole('region', { name: 'Where the money comes from' });
+	expect(await sources.getByRole('listitem').count()).toBeGreaterThan(3);
+	await expect(page.getByRole('region', { name: 'Where it goes' })).toBeVisible();
 });
 
 test('treemap drills down and back up', async ({ page }) => {
@@ -42,6 +55,29 @@ test('treemap drills down and back up', async ({ page }) => {
 	await expect(crumbs.getByText(name, { exact: true })).toBeVisible();
 	await crumbs.getByRole('button').first().click();
 	await expect(crumbs.getByRole('button')).toHaveCount(0);
+});
+
+test('breakdown search jumps to a department and the link keeps it', async ({ page }) => {
+	await page.goto('/budget/FY26/tree/');
+	await expect(page.locator('.headline')).toContainText('totals');
+	await page.getByLabel(/Find a department/).fill('police');
+	await page
+		.getByRole('button', { name: /^Police/ })
+		.first()
+		.click();
+	const crumbs = page.getByRole('navigation', { name: 'Breakdown level' });
+	await expect(crumbs).toContainText('Police');
+	await expect(page).toHaveURL(/p=Police/);
+	await page.reload();
+	await expect(crumbs).toContainText('Police');
+});
+
+test('breakdown switches to revenue grouped by fund', async ({ page }) => {
+	await page.goto('/budget/FY26/tree/');
+	await page.getByRole('radio', { name: 'Revenue' }).check();
+	await page.getByRole('radio', { name: 'Fund' }).check();
+	await expect(page).toHaveURL(/account=revenue&by=fund/);
+	await expect(page.getByRole('group', { name: /Budget, revenue$/ })).toBeVisible();
 });
 
 test('compare reads years from the URL and updates it as you change them', async ({ page }) => {
