@@ -15,3 +15,7 @@ _treemap/Approved.*.json
 _treemap/__pycache__
 .cache/standard/v17
 *:Zone.Identifier
+
+# Generated reports and docs (rebuilt by CI; do not commit)
+_src/coverage/
+_src/docs/jsdoc/

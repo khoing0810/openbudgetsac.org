@@ -1,0 +1,207 @@
+/* Design tokens. Brand colours carried over from the legacy site. */
+:root {
+	--green-dark: #004a37;
+	--green-muted: #42928f;
+	--teal: #00e2ae;
+	--gold: #fae3b5;
+	--link: #007c8a;
+	--link-hover: #00505a;
+	--revenue: #4f9d4f;
+	--revenue-fill: #7fc97f;
+	--fund: #42928f;
+	--expense: #e0661a;
+	--expense-fill: #ff8129;
+
+	--page: #ffffff;
+	--surface: #f9f9f9;
+	--text: #1f2a28;
+	--text-muted: #55605d;
+	--border: #dddddd;
+
+	--font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	--font-heading: 'Arvo', Georgia, serif;
+	--content-width: 72rem;
+	--gutter: 1rem;
+	--radius: 6px;
+
+	color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	background: var(--page);
+	color: var(--text);
+	font-family: var(--font-body);
+	font-size: 1rem;
+	line-height: 1.6;
+}
+
+h1,
+h2,
+h3,
+h4 {
+	font-family: var(--font-heading);
+	color: var(--green-dark);
+	line-height: 1.2;
+	margin: 1.5em 0 0.5em;
+}
+
+h1 {
+	font-size: clamp(1.75rem, 4vw, 2.5rem);
+}
+
+h2 {
+	font-size: clamp(1.4rem, 3vw, 1.9rem);
+}
+
+h3 {
+	font-size: 1.25rem;
+}
+
+p,
+ul,
+ol {
+	margin: 0 0 1em;
+}
+
+a {
+	color: var(--link);
+	text-underline-offset: 0.15em;
+}
+
+a:hover {
+	color: var(--link-hover);
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+}
+
+:focus-visible {
+	outline: 3px solid var(--teal);
+	outline-offset: 2px;
+}
+
+.container {
+	width: min(var(--content-width), 100% - 2 * var(--gutter));
+	margin-inline: auto;
+}
+
+.prose {
+	max-width: 46rem;
+}
+
+.lead {
+	font-size: 1.15rem;
+	color: var(--text-muted);
+}
+
+.muted {
+	color: var(--text-muted);
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+.card-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+	gap: 1.25rem;
+	padding: 0;
+	list-style: none;
+}
+
+.card {
+	display: block;
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	padding: 1rem;
+	text-decoration: none;
+	color: inherit;
+	background: var(--page);
+}
+
+.card:hover {
+	border-color: var(--green-muted);
+}
+
+.card h3 {
+	margin-top: 0;
+}
+
+.button {
+	display: inline-block;
+	padding: 0.6rem 1rem;
+	border-radius: var(--radius);
+	background: var(--green-dark);
+	color: #fff;
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.button:hover {
+	background: var(--green-muted);
+	color: #fff;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+th,
+td {
+	text-align: left;
+	padding: 0.4rem 0.6rem;
+	border-bottom: 1px solid var(--border);
+}
+
+td.num,
+th.num {
+	text-align: right;
+	font-variant-numeric: tabular-nums;
+}
+
+select,
+button {
+	font: inherit;
+}
+
+select {
+	padding: 0.35rem 0.5rem;
+	border: 1px solid var(--border);
+	border-radius: var(--radius);
+	background: var(--page);
+	min-height: 2.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	* {
+		transition: none !important;
+		animation: none !important;
+	}
+}
+
+.align-right {
+	text-align: right;
+}

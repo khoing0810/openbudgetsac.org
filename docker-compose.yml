@@ -17,3 +17,22 @@ services:
       target: verify-parallel
     profiles:
       - test
+  # Dev server for the SvelteKit rewrite in app/, with live reload.
+  # Run with: docker compose --profile app up app
+  app:
+    image: node:24
+    working_dir: /repo/app
+    command: sh -c "npm ci && npm run dev -- --host 0.0.0.0"
+    environment:
+      # File events don't cross bind mounts on macOS/Windows (or Podman VMs), so poll.
+      VITE_USE_POLLING: '1'
+    ports:
+      - '5173:5173'
+    volumes:
+      - .:/repo
+      - app-node-modules:/repo/app/node_modules
+    profiles:
+      - app
+
+volumes:
+  app-node-modules:
