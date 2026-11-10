@@ -11,7 +11,9 @@ const pages = [
 	'/who-we-are/',
 	'/budget-visuals/',
 	'/measure-z/',
-	'/compare/'
+	'/compare/',
+	'/explore/',
+	'/explore/?year=FY20&side=revenue&by=fund&department=Utilities'
 ];
 
 test('home page links to the latest budget', async ({ page }) => {
@@ -35,7 +37,7 @@ test('year picker switches the flow chart to another year', async ({ page }) => 
 });
 
 test('cash flow leads with a summary and offers a sources and uses view', async ({ page }) => {
-	await page.goto('/budget/FY26/flow/');
+	await page.goto('/budget/FY26/flow/?view=flow');
 	await expect(page.locator('.headline')).toContainText('planned to take in');
 	await expect(page.locator('.stat-grid')).toContainText('General Fund');
 	await page.getByRole('radio', { name: 'Sources and uses' }).check();
@@ -98,6 +100,35 @@ test('compare shows changes by department and switches to percent', async ({ pag
 	await page.getByRole('radio', { name: 'Percent' }).check();
 	await expect(rows.first().locator('.value')).toContainText('%');
 	await expect(page.getByRole('table', { name: /Spending by department/ })).toBeVisible();
+});
+
+test('explore drills into a department and keeps the view in the link', async ({ page }) => {
+	await page.goto('/explore/');
+	await expect(page.locator('.headline')).toContainText('All spending in FY 2025–26');
+	const bars = page.getByRole('list', { name: /By department/ });
+	await bars.getByRole('button', { name: /^Police/ }).click();
+	await expect(page).toHaveURL(/department=Police/);
+	await expect(page).toHaveURL(/by=category/);
+	await expect(page.locator('.headline')).toContainText('Spending for Police');
+	await expect(page.locator('#filter-department')).toHaveValue('Police');
+	await page.reload();
+	await expect(page.locator('.headline')).toContainText('Spending for Police');
+	await page.getByRole('button', { name: 'Clear filters' }).click();
+	await expect(page).not.toHaveURL(/department=/);
+});
+
+test('explore switches year and side, and offers downloads', async ({ page }) => {
+	await page.goto('/explore/?year=FY20&side=revenue');
+	await expect(page.getByLabel('Fiscal year')).toHaveValue('2020');
+	await expect(page.locator('.headline')).toContainText('All revenue in FY 2019–20');
+	await expect(
+		page.getByRole('table', { name: /Revenue by department, FY 2019–20/ })
+	).toBeVisible();
+	const download = page.waitForEvent('download');
+	await page.getByRole('button', { name: /Download this table/ }).click();
+	expect((await download).suggestedFilename()).toBe('sacramento-revenue-FY20-by-department.csv');
+	const res = await page.request.get('/data/approved-budgets.csv');
+	expect(res.ok()).toBe(true);
 });
 
 test('legacy chart URLs redirect to the latest year', async ({ page }) => {
