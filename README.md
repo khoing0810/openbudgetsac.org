@@ -227,8 +227,7 @@ openbudgetsac.org/
 - GitHub Pages deployment pipeline.
 
 ### Data tooling features
-- Python CSV splitting utility for flow inputs.
-- Python budget-asset generation for compare/tree datasets.
+- `npm run data:update` in `app/` downloads the City's Approved Budgets table and rebuilds the flow, tree and compare files (see `app/README.md`). It replaced the old Python split and generate scripts.
 - Treemap data tooling under `_treemap/`.
 
 ## Tech Stack
@@ -339,8 +338,7 @@ All dependencies required for active development are listed below.
 - `webpack-cli@^7.0.2`
 
 ### Python/data dependencies
-- `_src/data/split_csv.py` and `_src/data/generate_budget_assets.py` require:
-  - `pandas` (also listed in `_treemap/requirements.txt`)
+- `_treemap/` tooling requires `pandas` (see `_treemap/requirements.txt`). Budget data updates no longer need Python.
 
 ### System dependencies (for Puppeteer E2E on Linux)
 The E2E preflight checks and Docker test targets rely on shared libraries including:
