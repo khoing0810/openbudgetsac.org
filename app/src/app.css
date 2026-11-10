@@ -1,30 +1,159 @@
-/* Design tokens. Brand colours carried over from the legacy site. */
+/*
+ * Design tokens, following the USWDS 3 token approach: a small set of named
+ * roles (page, surface, text, primary...) mapped to system colours, so every
+ * component reads roles and never raw hex values. Text/background pairs keep a
+ * USWDS "magic number" of 50+ (WCAG AA) in both themes.
+ *
+ * Light is the default. Dark applies when the OS prefers it and the visitor
+ * hasn't picked light, or when they picked dark (html[data-theme]).
+ */
 :root {
-	--green-dark: #004a37;
-	--green-muted: #42928f;
-	--teal: #00e2ae;
-	--gold: #fae3b5;
-	--link: #007c8a;
-	--link-hover: #00505a;
-	--revenue: #4f9d4f;
-	--revenue-fill: #7fc97f;
-	--fund: #42928f;
-	--expense: #e0661a;
-	--expense-fill: #ff8129;
-
 	--page: #ffffff;
-	--surface: #f9f9f9;
-	--text: #1f2a28;
-	--text-muted: #55605d;
-	--border: #dddddd;
+	--surface: #f3f5f6;
+	--raised: #ffffff;
+	--text: #1b1b1b;
+	--text-strong: #0b2e26;
+	--text-muted: #565c65;
+	--border: #dfe1e2;
+	--border-strong: #a9aeb1;
 
-	--font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-	--font-heading: 'Arvo', Georgia, serif;
-	--content-width: 72rem;
+	--primary: #00563f;
+	--primary-hover: #003d2d;
+	--on-primary: #ffffff;
+	--primary-soft: #e3f3ec;
+	--hero: #062d24;
+	--on-hero: #ffffff;
+	--on-hero-muted: #c8e6da;
+	--accent: #ffbe2e;
+	--link: #005ea2;
+	--link-hover: #1a4480;
+	--focus: #2491ff;
+
+	--revenue: #2e8367;
+	--revenue-fill: #3fa77f;
+	--fund: #1a4480;
+	--expense: #c05600;
+	--expense-fill: #e8742a;
+
+	--tile-text: #1b1b1b;
+	--tile-1: #8dd3c7;
+	--tile-2: #bebada;
+	--tile-3: #fdb462;
+	--tile-4: #b3de69;
+	--tile-5: #fccde5;
+	--tile-6: #80b1d3;
+	--tile-7: #ffffb3;
+	--tile-8: #d9d9d9;
+	--tile-9: #bc80bd;
+	--tile-10: #ccebc5;
+	--tile-11: #ffed6f;
+	--tile-12: #fb8072;
+
+	--font-body:
+		'Public Sans Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+		sans-serif;
+	--font-heading: var(--font-body);
+	--content-width: 76rem;
 	--gutter: 1rem;
-	--radius: 6px;
+	--radius: 4px;
+	--shadow: 0 1px 2px rgb(0 0 0 / 0.06), 0 6px 20px rgb(0 0 0 / 0.06);
 
 	color-scheme: light;
+}
+
+/* Dark theme: applied for the OS preference here, and for an explicit choice in the next block. Keep the two in sync. */
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) {
+		--page: #0e1418;
+		--surface: #151d23;
+		--raised: #1b252c;
+		--text: #e6e8ea;
+		--text-strong: #f5f7f8;
+		--text-muted: #a9aeb1;
+		--border: #2e3a43;
+		--border-strong: #5d6a73;
+
+		--primary: #5ec7a0;
+		--primary-hover: #8ad8bb;
+		--on-primary: #062d24;
+		--primary-soft: #13302a;
+		--hero: #0a221c;
+		--on-hero: #f5f7f8;
+		--on-hero-muted: #a8cfc0;
+		--accent: #ffbe2e;
+		--link: #73b3e7;
+		--link-hover: #a1cbf1;
+		--focus: #59b9de;
+
+		--revenue: #5ec7a0;
+		--revenue-fill: #3fa77f;
+		--fund: #73b3e7;
+		--expense: #fa9441;
+		--expense-fill: #e8742a;
+
+		--tile-text: #ffffff;
+		--tile-1: #0e6b5c;
+		--tile-2: #4f4a8f;
+		--tile-3: #94480f;
+		--tile-4: #3d6614;
+		--tile-5: #8a3866;
+		--tile-6: #1f5c94;
+		--tile-7: #6e6200;
+		--tile-8: #4d5560;
+		--tile-9: #6b3e86;
+		--tile-10: #2a6646;
+		--tile-11: #805500;
+		--tile-12: #9e3a3a;
+
+		--shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
+		color-scheme: dark;
+	}
+}
+
+:root[data-theme='dark'] {
+	--page: #0e1418;
+	--surface: #151d23;
+	--raised: #1b252c;
+	--text: #e6e8ea;
+	--text-strong: #f5f7f8;
+	--text-muted: #a9aeb1;
+	--border: #2e3a43;
+	--border-strong: #5d6a73;
+
+	--primary: #5ec7a0;
+	--primary-hover: #8ad8bb;
+	--on-primary: #062d24;
+	--primary-soft: #13302a;
+	--hero: #0a221c;
+	--on-hero: #f5f7f8;
+	--on-hero-muted: #a8cfc0;
+	--accent: #ffbe2e;
+	--link: #73b3e7;
+	--link-hover: #a1cbf1;
+	--focus: #59b9de;
+
+	--revenue: #5ec7a0;
+	--revenue-fill: #3fa77f;
+	--fund: #73b3e7;
+	--expense: #fa9441;
+	--expense-fill: #e8742a;
+
+	--tile-text: #ffffff;
+	--tile-1: #0e6b5c;
+	--tile-2: #4f4a8f;
+	--tile-3: #94480f;
+	--tile-4: #3d6614;
+	--tile-5: #8a3866;
+	--tile-6: #1f5c94;
+	--tile-7: #6e6200;
+	--tile-8: #4d5560;
+	--tile-9: #6b3e86;
+	--tile-10: #2a6646;
+	--tile-11: #805500;
+	--tile-12: #9e3a3a;
+
+	--shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
+	color-scheme: dark;
 }
 
 *,
@@ -35,6 +164,7 @@
 
 html {
 	-webkit-text-size-adjust: 100%;
+	background: var(--page);
 }
 
 body {
@@ -42,8 +172,9 @@ body {
 	background: var(--page);
 	color: var(--text);
 	font-family: var(--font-body);
-	font-size: 1rem;
+	font-size: 1.0625rem;
 	line-height: 1.6;
+	font-feature-settings: 'tnum' 0;
 }
 
 h1,
@@ -51,21 +182,26 @@ h2,
 h3,
 h4 {
 	font-family: var(--font-heading);
-	color: var(--green-dark);
-	line-height: 1.2;
+	color: var(--text-strong);
+	line-height: 1.1;
+	letter-spacing: -0.02em;
 	margin: 1.5em 0 0.5em;
+	text-wrap: balance;
 }
 
 h1 {
-	font-size: clamp(1.75rem, 4vw, 2.5rem);
+	font-size: clamp(2rem, 5vw, 3.25rem);
+	font-weight: 800;
 }
 
 h2 {
-	font-size: clamp(1.4rem, 3vw, 1.9rem);
+	font-size: clamp(1.5rem, 3vw, 2.1rem);
+	font-weight: 750;
 }
 
 h3 {
 	font-size: 1.25rem;
+	font-weight: 700;
 }
 
 p,
@@ -76,11 +212,13 @@ ol {
 
 a {
 	color: var(--link);
-	text-underline-offset: 0.15em;
+	text-underline-offset: 0.18em;
+	text-decoration-thickness: 1px;
 }
 
 a:hover {
 	color: var(--link-hover);
+	text-decoration-thickness: 2px;
 }
 
 img {
@@ -89,7 +227,7 @@ img {
 }
 
 :focus-visible {
-	outline: 3px solid var(--teal);
+	outline: 3px solid var(--focus);
 	outline-offset: 2px;
 }
 
@@ -103,11 +241,23 @@ img {
 }
 
 .lead {
-	font-size: 1.15rem;
+	font-size: clamp(1.1rem, 2vw, 1.3rem);
+	line-height: 1.5;
 	color: var(--text-muted);
 }
 
 .muted {
+	color: var(--text-muted);
+}
+
+/* Small uppercase label above a heading. */
+.eyebrow {
+	display: block;
+	margin: 0 0 0.5rem;
+	font-size: 0.8rem;
+	font-weight: 700;
+	letter-spacing: 0.12em;
+	text-transform: uppercase;
 	color: var(--text-muted);
 }
 
@@ -132,36 +282,73 @@ img {
 }
 
 .card {
-	display: block;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
 	border: 1px solid var(--border);
 	border-radius: var(--radius);
 	padding: 1rem;
 	text-decoration: none;
 	color: inherit;
-	background: var(--page);
+	background: var(--raised);
+	transition:
+		border-color 120ms ease,
+		transform 120ms ease,
+		box-shadow 120ms ease;
 }
 
 .card:hover {
-	border-color: var(--green-muted);
+	color: inherit;
+	border-color: var(--primary);
+	box-shadow: var(--shadow);
+	transform: translateY(-2px);
 }
 
 .card h3 {
 	margin-top: 0;
 }
 
-.button {
+/* Arrow cue on links: → stays on site, ↗ leaves it. */
+.arrow::after {
+	content: '→';
 	display: inline-block;
-	padding: 0.6rem 1rem;
+	margin-left: 0.3em;
+	transition: transform 120ms ease;
+}
+.arrow.external::after {
+	content: '↗';
+}
+a:hover > .arrow::after,
+a.arrow:hover::after {
+	transform: translateX(3px);
+}
+
+.button {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.4rem;
+	padding: 0.75rem 1.25rem;
 	border-radius: var(--radius);
-	background: var(--green-dark);
-	color: #fff;
+	background: var(--primary);
+	color: var(--on-primary);
 	text-decoration: none;
-	font-weight: 600;
+	font-weight: 700;
 }
 
 .button:hover {
-	background: var(--green-muted);
-	color: #fff;
+	background: var(--primary-hover);
+	color: var(--on-primary);
+}
+
+.button.outline {
+	background: transparent;
+	color: inherit;
+	box-shadow: inset 0 0 0 2px currentColor;
+}
+
+.button.outline:hover {
+	background: rgb(255 255 255 / 0.08);
+	color: inherit;
 }
 
 table {
@@ -172,8 +359,14 @@ table {
 th,
 td {
 	text-align: left;
-	padding: 0.4rem 0.6rem;
+	padding: 0.5rem 0.6rem;
 	border-bottom: 1px solid var(--border);
+}
+
+th {
+	font-size: 0.9rem;
+	color: var(--text-muted);
+	font-weight: 700;
 }
 
 td.num,
@@ -183,16 +376,22 @@ th.num {
 }
 
 select,
-button {
+button,
+input {
 	font: inherit;
+	color: inherit;
 }
 
 select {
-	padding: 0.35rem 0.5rem;
-	border: 1px solid var(--border);
+	padding: 0.4rem 0.6rem;
+	border: 1px solid var(--border-strong);
 	border-radius: var(--radius);
-	background: var(--page);
-	min-height: 2.5rem;
+	background: var(--raised);
+	min-height: 2.75rem;
+}
+
+details summary {
+	cursor: pointer;
 }
 
 @media (prefers-reduced-motion: reduce) {

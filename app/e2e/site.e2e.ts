@@ -53,8 +53,32 @@ test('unknown pages show the not-found page', async ({ page }) => {
 	expect(res?.status()).toBe(404);
 });
 
-for (const path of pages) {
-	test(`${path} has no detectable WCAG A/AA violations`, async ({ page }) => {
+test('theme toggle switches to dark and remembers it', async ({ page }) => {
+	await page.emulateMedia({ colorScheme: 'light' });
+	await page.goto('/');
+	const toggle = page.getByRole('button', { name: 'Dark mode' });
+	await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+	await toggle.click();
+	await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+	await page.reload();
+	await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+	await expect(page.getByRole('button', { name: 'Dark mode' })).toHaveAttribute(
+		'aria-pressed',
+		'true'
+	);
+});
+
+test('home shows the latest year at a glance', async ({ page }) => {
+	await page.goto('/');
+	await expect(page.getByText('Total spending')).toBeVisible();
+	await expect(page.getByRole('heading', { name: /Biggest departments/ })).toBeVisible();
+});
+
+for (const [path, scheme] of pages.flatMap((p) =>
+	(['light', 'dark'] as const).map((s) => [p, s] as const)
+)) {
+	test(`${path} in ${scheme} mode has no detectable WCAG A/AA violations`, async ({ page }) => {
+		await page.emulateMedia({ colorScheme: scheme });
 		await page.goto(path);
 		await page.waitForLoadState('networkidle');
 		const results = await new AxeBuilder({ page })

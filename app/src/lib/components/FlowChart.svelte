@@ -93,7 +93,7 @@
 					{#each layout.links as link (link.index)}
 						<path
 							d={link.path}
-							stroke={linkColor(link)}
+							style:stroke={linkColor(link)}
 							stroke-width={link.width}
 							class:active={isActive(link)}
 							class:dim={(hoveredLink !== null || selectedNode !== null) && !isActive(link)}
@@ -118,7 +118,7 @@
 							<rect
 								width={node.x1 - node.x0}
 								height={h}
-								fill={nodeFill(node)}
+								style:fill={nodeFill(node)}
 								tabindex="0"
 								role="button"
 								aria-pressed={selectedNode === node.id}
