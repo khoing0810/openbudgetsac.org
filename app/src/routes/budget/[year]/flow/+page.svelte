@@ -23,21 +23,22 @@
 	type View = 'flow' | 'bars';
 	let view = $state<View>('flow');
 	let ready = $state(false);
+	// The view a visit started on; the URL only names a view someone chose.
+	let start: View | null = null;
+	let fromLink = false;
 
 	// Phones start on the ranked bars, which read without sideways scrolling.
 	// A ?view= in the URL wins, so a link opens the view it was shared from.
 	onMount(() => {
 		const q = new URL(location.href).searchParams.get('view');
-		view =
-			q === 'flow' || q === 'bars'
-				? q
-				: matchMedia('(max-width: 47.99rem)').matches
-					? 'bars'
-					: 'flow';
+		fromLink = q === 'flow' || q === 'bars';
+		view = fromLink ? (q as View) : matchMedia('(max-width: 47.99rem)').matches ? 'bars' : 'flow';
+		start = view;
 		ready = true;
 	});
 	$effect(() => {
-		const href = `${resolve('/budget/[year]/flow', { year: data.year.id })}/?view=${view}`;
+		const query = fromLink || view !== start ? `?view=${view}` : '';
+		const href = `${resolve('/budget/[year]/flow', { year: data.year.id })}/${query}`;
 		// eslint-disable-next-line svelte/no-navigation-without-resolve -- the path is resolve()d; only a query string is appended
 		if (ready) replaceState(href, {});
 	});

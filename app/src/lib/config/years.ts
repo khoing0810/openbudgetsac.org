@@ -1,10 +1,13 @@
 /**
  * The single list of budget years the site publishes.
  *
- * Adding a year: drop the source files into `_src/data/flow/<id>.csv` and
- * `_src/data/tree/Approved.{Expense,Revenue}.<id>.json`, then add one entry
- * here. Every route under `/budget/[year]` is prerendered from this list.
+ * New years arrive on their own: `npm run data:update` downloads the City's
+ * Approved Budgets table, writes each year's files and lists the years in
+ * `open-data.json`. Older years, whose files came from other exports, are
+ * listed by hand below. Every route under `/budget/[year]` is prerendered from
+ * this list.
  */
+import openData from './open-data.json';
 
 /** Column names and discriminator values for one year's flow CSV export. */
 export interface FlowSchema {
@@ -42,7 +45,7 @@ const OPEN_DATA_SCHEMA: FlowSchema = {
 	amount: 'Amount'
 };
 
-/** FY25 onward spell out the revenue/expense discriminator. */
+/** Files built from the open dataset (FY25 on) spell out the revenue/expense discriminator. */
 const OPEN_DATA_SCHEMA_SPELLED: FlowSchema = {
 	...OPEN_DATA_SCHEMA,
 	revenueValue: 'Revenues',
@@ -67,10 +70,8 @@ const year = (n: number, flow: FlowSchema): BudgetYear => {
 	return { id: `FY${yy}`, label: `FY 20${prev}–${yy}`, flow };
 };
 
-/** Newest first. */
-export const budgetYears: readonly BudgetYear[] = [
-	year(26, OPEN_DATA_SCHEMA_SPELLED),
-	year(25, OPEN_DATA_SCHEMA_SPELLED),
+/** Years published before the open dataset was the source, newest first. */
+const legacyYears: readonly BudgetYear[] = [
 	year(24, OPEN_DATA_SCHEMA),
 	year(23, OPEN_DATA_SCHEMA),
 	year(22, OPEN_DATA_SCHEMA),
@@ -85,6 +86,17 @@ export const budgetYears: readonly BudgetYear[] = [
 	year(13, OPEN_DATA_SCHEMA)
 ];
 
+/** Newest first. */
+export const budgetYears: readonly BudgetYear[] = [
+	...[...openData.years].sort((a, b) => b - a).map((y) => year(y % 100, OPEN_DATA_SCHEMA_SPELLED)),
+	...legacyYears.filter(
+		(l) => !openData.years.some((y) => year(y % 100, OPEN_DATA_SCHEMA).id === l.id)
+	)
+];
+
+/** When the City last updated its Approved Budgets table (YYYY-MM-DD), if known. */
+export const dataUpdated: string | null = openData.updated;
+
 export const latestYear: BudgetYear = budgetYears[0];
 
 export function findYear(id: string): BudgetYear | undefined {
@@ -97,6 +109,8 @@ export type TreeAccount = (typeof treeAccounts)[number];
 
 /** Paths are relative to `static/`, for use with `asset()`. */
 export const dataPaths = {
+	/** The City's whole Approved Budgets table, every year (also offered as a download). */
+	approvedBudgets: 'data/approved-budgets.csv',
 	flow: (y: string) => `data/flow/${y}.csv` as const,
 	tree: (y: string, account: TreeAccount) => `data/tree/Approved.${account}.${y}.json` as const,
 	compare: (kind: 'expenses' | 'revenue', dimension: 'depts' | 'account-cats', y: string) =>

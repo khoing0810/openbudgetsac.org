@@ -21,7 +21,8 @@
 		"test": "npm run test:unit -- --run && npm run test:e2e",
 		"test:e2e": "playwright test",
 		"predev": "node scripts/sync-data.js",
-		"prebuild": "node scripts/sync-data.js"
+		"prebuild": "node scripts/sync-data.js",
+		"data:update": "node scripts/update-budget-data.ts"
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "^4.14.0",
