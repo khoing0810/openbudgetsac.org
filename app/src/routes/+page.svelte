@@ -32,8 +32,8 @@
 		{
 			title: 'Compare years',
 			body: 'Put two budgets head to head to see what grew and what shrank.',
-			href: 'https://openbudgetsac.org/compare/',
-			external: true,
+			href: resolve('/compare'),
+			external: false,
 			image: asset('images/home/compare-thumb.jpg'),
 			alt: 'The comparison tool, comparing two Sacramento city budgets.'
 		},

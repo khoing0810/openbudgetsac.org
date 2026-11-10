@@ -41,12 +41,13 @@ To build for a sub-path such as GitHub Pages project pages, set `BASE_PATH=/open
 
 ## Routes
 
-| Path                                             | Page                                                     |
-| ------------------------------------------------ | -------------------------------------------------------- |
-| `/budget/`                                       | All budget years                                         |
-| `/budget/<year>/flow/`                           | Cash flow (Sankey) for a year, e.g. `/budget/FY26/flow/` |
-| `/budget/<year>/tree/`                           | Detailed breakdown (treemap) for a year                  |
-| `/adopted-budget-flow/`, `/adopted-budget-tree/` | Redirect old links to the latest year                    |
+| Path                                             | Page                                                                                                                    |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| `/budget/`                                       | All budget years                                                                                                        |
+| `/budget/<year>/flow/`                           | Cash flow (Sankey) for a year, e.g. `/budget/FY26/flow/`                                                                |
+| `/compare/?from=FY25&to=FY26`                    | Compare any two years: what changed, the long-run trend, and a full table. The URL keeps the choice so it can be shared |
+| `/budget/<year>/tree/`                           | Detailed breakdown (treemap) for a year                                                                                 |
+| `/adopted-budget-flow/`, `/adopted-budget-tree/` | Redirect old links to the latest year                                                                                   |
 
 ## CI/CD
 
@@ -58,5 +59,4 @@ To build for a sub-path such as GitHub Pages project pages, set `BASE_PATH=/open
 
 ## Not yet ported
 
-- Compare page (links to the current site for now).
 - Spanish translations. The plan is Paraglide, so translations are compiled and tree-shaken per page.
